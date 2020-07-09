@@ -41,6 +41,7 @@ public class GenCodeTest {
        WebGenerator cg2 = new WebGenerator(dbUrl, dbUserName, dbPwd);
         // 包名
         cg2.setPackageName(webPackageName);
+        cg2.setModuleName(moduleName);
         cg2.setModuleDirName(webTargetModuleName);
         cg2.genCode(tables);
     }
