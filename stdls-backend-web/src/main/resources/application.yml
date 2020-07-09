@@ -1,0 +1,32 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/stdls?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true
+    username: stdls
+    password: 123456
+    # 数据源
+    hikari:
+      #    30分钟
+      max-lifetime: 176500
+      maximum-pool-size: 15
+    # 缓存配置
+  redis:
+    host: localhost
+    port: 6379
+    #命名空间--前缀
+    prefix: backend
+    timeout: 2000
+  task:
+    execution:
+      pool:
+        core-size: 20
+        max-size: 40
+        queue-capacity: 1000
+swagger2:
+  enabled: true
+# 日志
+logging:
+  config: classpath:logback.xml
