@@ -11,6 +11,10 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +40,7 @@ public class ServiceGenerator {
     private String superEntityClass = "";
     private String superServiceClass = "";
     private String moduleDirName = "";
-    private boolean onlyEntity = false;
+    private boolean onlyEntity = true;
 
     public ServiceGenerator(String dbUrl, String dbUserName, String dbPwd) {
         this.dbUrl = dbUrl;
@@ -86,8 +90,6 @@ public class ServiceGenerator {
         tc.setXml(null);
         tc.setController(null);
         if (this.isOnlyEntity()) {
-            tc.setService(null);
-            tc.setServiceImpl(null);
             tc.setMapper(null);
         }
         return tc;
@@ -123,7 +125,7 @@ public class ServiceGenerator {
         strategy.setCapitalMode(false);
         strategy.setEntityLombokModel(true);
         strategy.setNaming(NamingStrategy.underline_to_camel);
-        //修改替换成你需要的表名，多个表名传数组
+//        //修改替换成你需要的表名，多个表名传数组
         strategy.setInclude(tableNames);
         if (null != this.getSuperEntityClass()) {
             strategy.setSuperEntityClass(this.getSuperEntityClass());
@@ -139,12 +141,74 @@ public class ServiceGenerator {
         mpg.setGlobalConfig(getGlobalConfig());
         mpg.setDataSource(getDataSourceConfig());
         mpg.setPackageInfo(getPackageConfig());
-        if (!this.isOnlyEntity()) {
-            mpg.setCfg(getInjectionConfig());
-        }
+//        if (!this.isOnlyEntity()) {
+//            mpg.setCfg(getInjectionConfig());
+//        }
         mpg.setTemplate(getTemplateConfig());
         mpg.setStrategy(getStrategyConfig(tableNames));
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();
+        // 删除entity包
+        String path = projectPath + "/src/main/java/" + packageName.replace(".", "/") + "/" + moduleName + "/entity";
+
+        boolean a = delete(path);
+        if (!a) {
+            throw new RuntimeException("多余文件删除失败，请手工删除：" + path);
+        }
+        System.out.println(projectPath + "/src/main/java/" + packageName.replace(".", "/") + "/" + moduleName + "/service/" + serviceName.replace("%s", StringUtils.capitalize(moduleName)));
+//      import com.daidai.stdlsbackend.service
+        String filePath1 = projectPath + "/src/main/java/" + packageName.replace(".", "/") + "/" + moduleName + "/service/" + serviceName.replace("%s", StringUtils.capitalize(moduleName))+".java";
+        String filePath2 = projectPath + "/src/main/java/" + packageName.replace(".", "/") + "/" + moduleName + "/service/impl/" + serviceImplName.replace("%s", StringUtils.capitalize(moduleName))+".java";
+        System.out.println(filePath2);
+        autoReplace(filePath1, "import com.daidai.stdlsbackend.service", "import com.daidai.stdlsbackend.dao");
+        autoReplace(filePath2, "import com.daidai.stdlsbackend.service"+"."+moduleName+".entity", "import com.daidai.stdlsbackend.dao"+"."+moduleName+".entity");
+        autoReplace(filePath2, "import com.daidai.stdlsbackend.service"+"."+moduleName+".mapper", "import com.daidai.stdlsbackend.dao"+"."+moduleName+".mapper");
+        // 替换service
+//        File file = new File(projectPath + "/src/main/java/" + packageName.replace(".", "/") + "/" + moduleName+"/serviceName")
+    }
+
+    public boolean delete(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            return false;
+        }
+        if (file.isFile()) {
+            return file.delete();
+        }
+        File[] files = file.listFiles();
+        for (File f : files) {
+            if (f.isFile()) {
+                if (!f.delete()) {
+                    System.out.println(f.getAbsolutePath() + " delete error!");
+                    return false;
+                }
+            } else {
+                if (!this.delete(f.getAbsolutePath())) {
+                    return false;
+                }
+            }
+        }
+        return file.delete();
+    }
+
+    public void autoReplace(String filePath, String oldWord, String newWord) {
+        File file = new File(filePath);
+        Long fileLength = file.length();
+        try {
+            byte[] fileContext = new byte[fileLength.intValue()];
+            FileInputStream in = new FileInputStream(filePath);
+            in.read(fileContext);
+            in.close();
+            String str = new String(fileContext);
+
+            str = str.replace(oldWord, newWord);
+
+            PrintWriter out = new PrintWriter(filePath);
+            out.write(str.toCharArray());
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

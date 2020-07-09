@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,25 +21,25 @@ import java.util.List;
  * @description: mybatis代码生成器
  */
 @Data
-public class DaoGenerator {
+public class WebGenerator {
     private String dbUrl;
     private String dbDriverName = "com.mysql.jdbc.Driver";
     private String dbUserName;
     private String dbPwd;
     private String projectPath;
-    //private String serviceName = "I%sService";
-    //private String serviceImplName = "%sServiceImpl";
-    private String entityName = "%sDO";
+//    private String serviceName = "I%sService";
+//    private String serviceImplName = "%sServiceImpl";
+    //    private String entityName = "%sAAAA";
     private String moduleName;
     private String packageName;
-    //private String servicePkgName = "service";
-    //private String serviceImplPkgName = "service.impl";
+//    private String servicePkgName = "service";
+//    private String serviceImplPkgName = "service.impl";
     private String superEntityClass = "";
     private String superServiceClass = "";
     private String moduleDirName = "";
     private boolean onlyEntity = true;
 
-    public DaoGenerator(String dbUrl, String dbUserName, String dbPwd) {
+    public WebGenerator(String dbUrl, String dbUserName, String dbPwd) {
         this.dbUrl = dbUrl;
         this.dbUserName = dbUserName;
         this.dbPwd = dbPwd;
@@ -56,9 +57,9 @@ public class DaoGenerator {
                 .setIdType(IdType.ID_WORKER_STR)
                 .setEnableCache(false)
                 .setBaseResultMap(true);
-        //config.setServiceName(this.serviceName);
-        //config.setServiceImplName(this.serviceImplName);
-        config.setEntityName(this.entityName);
+        config.setServiceName(null);
+        config.setServiceImplName(null);
+        config.setEntityName(null);
         return config;
     }
 
@@ -74,9 +75,9 @@ public class DaoGenerator {
     private PackageConfig getPackageConfig() {
         PackageConfig pc = new PackageConfig();
         pc.setParent(this.packageName);
-        pc.setEntity("entity");
-//        pc.setService(null);
-//        pc.setServiceImpl(null);
+        pc.setEntity(null);
+//        pc.setService(this.servicePkgName);
+//        pc.setServiceImpl(this.serviceImplPkgName);
         pc.setModuleName(this.moduleName);
         return pc;
     }
@@ -86,9 +87,7 @@ public class DaoGenerator {
         tc.setXml(null);
         tc.setController(null);
         if (this.isOnlyEntity()) {
-            tc.setService(null);
-            tc.setServiceImpl(null);
-            //tc.setMapper(null);
+            tc.setMapper(null);
         }
         return tc;
     }
@@ -123,7 +122,7 @@ public class DaoGenerator {
         strategy.setCapitalMode(false);
         strategy.setEntityLombokModel(true);
         strategy.setNaming(NamingStrategy.underline_to_camel);
-        //修改替换成你需要的表名，多个表名传数组
+//        //修改替换成你需要的表名，多个表名传数组
         strategy.setInclude(tableNames);
         if (null != this.getSuperEntityClass()) {
             strategy.setSuperEntityClass(this.getSuperEntityClass());
@@ -139,12 +138,43 @@ public class DaoGenerator {
         mpg.setGlobalConfig(getGlobalConfig());
         mpg.setDataSource(getDataSourceConfig());
         mpg.setPackageInfo(getPackageConfig());
-
-        mpg.setCfg(getInjectionConfig());
-
+        if (!this.isOnlyEntity()) {
+            mpg.setCfg(getInjectionConfig());
+        }
         mpg.setTemplate(getTemplateConfig());
         mpg.setStrategy(getStrategyConfig(tableNames));
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();
+        // 删除entity包
+        String path = projectPath + "/src/main/java/" + packageName.replace(".", "/") + "/" + moduleName + "/null";
+
+        boolean a = delete(path);
+        if (!a) {
+            throw new RuntimeException("多余文件删除失败，请手工删除：" + path);
+        }
+    }
+
+    public boolean delete(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            return false;
+        }
+        if (file.isFile()) {
+            return file.delete();
+        }
+        File[] files = file.listFiles();
+        for (File f : files) {
+            if (f.isFile()) {
+                if (!f.delete()) {
+                    System.out.println(f.getAbsolutePath() + " delete error!");
+                    return false;
+                }
+            } else {
+                if (!this.delete(f.getAbsolutePath())) {
+                    return false;
+                }
+            }
+        }
+        return file.delete();
     }
 }
