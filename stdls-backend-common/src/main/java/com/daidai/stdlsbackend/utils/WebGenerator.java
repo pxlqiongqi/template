@@ -30,7 +30,7 @@ public class WebGenerator {
 //    private String serviceName = "I%sService";
 //    private String serviceImplName = "%sServiceImpl";
     //    private String entityName = "%sAAAA";
-    private String moduleName;
+//    private String moduleName;
     private String packageName;
 //    private String servicePkgName = "service";
 //    private String serviceImplPkgName = "service.impl";
@@ -78,15 +78,17 @@ public class WebGenerator {
         pc.setEntity(null);
 //        pc.setService(this.servicePkgName);
 //        pc.setServiceImpl(this.serviceImplPkgName);
-        pc.setModuleName(this.moduleName);
+        pc.setModuleName(null);
         return pc;
     }
 
     private TemplateConfig getTemplateConfig() {
         TemplateConfig tc = new TemplateConfig();
         tc.setXml(null);
-        tc.setController(null);
+//        tc.setController(null);
         if (this.isOnlyEntity()) {
+            tc.setService(null);
+            tc.setServiceImpl(null);
             tc.setMapper(null);
         }
         return tc;
@@ -103,9 +105,9 @@ public class WebGenerator {
         String templatePath = "/templates/mapper.xml.ftl";
         List<FileOutConfig> focList = new ArrayList<>();
         final StringBuilder xmlPath = new StringBuilder(projectPath + "/src/main/resources/mapper/");
-        if (!StringUtils.isEmpty(this.moduleName)) {
-            xmlPath.append(this.moduleName + "/");
-        }
+//        if (!StringUtils.isEmpty(this.moduleName)) {
+//            xmlPath.append(this.moduleName + "/");
+//        }
         focList.add(new FileOutConfig(templatePath) {
             @Override
             public String outputFile(TableInfo tableInfo) {
@@ -146,7 +148,7 @@ public class WebGenerator {
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();
         // 删除entity包
-        String path = projectPath + "/src/main/java/" + packageName.replace(".", "/") + "/" + moduleName + "/null";
+        String path = projectPath + "/src/main/java/" + packageName.replace(".", "/")  + "/null";
 
         boolean a = delete(path);
         if (!a) {
