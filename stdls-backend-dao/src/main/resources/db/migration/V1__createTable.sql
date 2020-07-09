@@ -1,11 +1,11 @@
 DROP TABLE IF EXISTS `dict`;
 CREATE TABLE `dict`
 (
-    `dict_id`    bigint(20) NOT NULL COMMENT '字典id',
-    `dict_type`  varchar(32) DEFAULT NULL COMMENT '字典类型',
-    `dict_key`   varchar(16) DEFAULT NULL COMMENT '字典值',
-    `dict_value` varchar(32) DEFAULT NULL COMMENT '描述',
-    `deleted`    tinyint(1)  DEFAULT '0' COMMENT '逻辑删除',
+    `dict_id`    varchar(32) NOT NULL COMMENT '字典id',
+    `dict_type`  varchar(32)         DEFAULT NULL COMMENT '字典类型',
+    `dict_key`   varchar(16)         DEFAULT NULL COMMENT '字典值',
+    `dict_value` varchar(32)         DEFAULT NULL COMMENT '描述',
+    `deleted`    tinyint(1) unsigned DEFAULT '0' COMMENT '逻辑删除',
     PRIMARY KEY (`dict_id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -15,17 +15,17 @@ CREATE TABLE `dict`
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
-    `user_id`     varchar(64)  NOT NULL COMMENT 'id',
-    `name`        varchar(64)  DEFAULT '' COMMENT '姓名',
-    `phone`       char(11)     DEFAULT '' COMMENT '手机号',
-    `area_id`     varchar(64)  DEFAULT NULL COMMENT '所属区域',
-    `lv`          tinyint(1)   DEFAULT NULL COMMENT '所属区域级别',
-    `account`     varchar(64)  NOT NULL COMMENT '登录账号',
-    `password`    varchar(128) NOT NULL COMMENT '登录密码',
-    `user_type`   char(1)      NOT NULL COMMENT '账号类型 1-城管局|2-运营商',
-    `company_id`  varchar(128) DEFAULT NULL COMMENT '运营商id',
-    `deleted`     tinyint      DEFAULT 0 COMMENT '是否删除(0:正常,1:删除)',
-    `add_time`    datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `user_id`     varchar(64)         NOT NULL COMMENT 'id',
+    `name`        varchar(64)         DEFAULT '' COMMENT '姓名',
+    `phone`       char(11)            DEFAULT '' COMMENT '手机号',
+    `area_id`     varchar(64)         DEFAULT NULL COMMENT '所属区域',
+    `lv`          tinyint(1)          DEFAULT NULL COMMENT '所属区域级别',
+    `account`     varchar(64)         NOT NULL COMMENT '登录账号',
+    `password`    varchar(128)        NOT NULL COMMENT '登录密码',
+    `user_type`   tinyint(1) unsigned NOT NULL COMMENT '账号类型 1-城管局|2-运营商',
+    `company_id`  varchar(128)        DEFAULT NULL COMMENT '运营商id',
+    `deleted`     tinyint(1) unsigned DEFAULT 0 COMMENT '是否删除(0:正常,1:删除)',
+    `add_time`    datetime            DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`user_id`)
 ) ENGINE = InnoDB
@@ -53,10 +53,10 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`
 (
     `role_id`     varchar(64) NOT NULL COMMENT '角色编码(不能重复)',
-    `name`        varchar(128) DEFAULT '' COMMENT '角色名称',
-    `remark`      varchar(128) DEFAULT '' COMMENT '说明',
-    `deleted`     tinyint(4)   DEFAULT '0' COMMENT '逻辑删除(0:未删除,1:已删除)',
-    `add_time`    datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `name`        varchar(128)        DEFAULT '' COMMENT '角色名称',
+    `remark`      varchar(128)        DEFAULT '' COMMENT '说明',
+    `deleted`     tinyint(1) unsigned DEFAULT '0' COMMENT '逻辑删除(0:未删除,1:已删除)',
+    `add_time`    datetime            DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB
@@ -99,7 +99,7 @@ CREATE TABLE `resource`
     `remark`         varchar(512)         DEFAULT '' COMMENT '说明',
     `create_user_id` varchar(64)          DEFAULT NULL COMMENT '创建人',
     `target`         varchar(64)          DEFAULT NULL COMMENT 'target',
-    `deleted`        tinyint(4)           DEFAULT '0' COMMENT '逻辑删除(0:未删除,1:已删除)',
+    `deleted`        tinyint(1) unsigned  DEFAULT '0' COMMENT '逻辑删除(0:未删除,1:已删除)',
     `add_time`       datetime             DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`    datetime ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`resource_id`) USING BTREE
