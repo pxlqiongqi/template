@@ -3,38 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>stdls-backend-parent</artifactId>
+        <artifactId>template-parent</artifactId>
         <groupId>com.daidai.stdls</groupId>
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>stdls-backend-web</artifactId>
-
+    <artifactId>template-service</artifactId>
     <dependencies>
         <dependency>
-            <artifactId>stdls-backend-service</artifactId>
+            <artifactId>template-dao</artifactId>
             <groupId>com.daidai.stdls</groupId>
             <version>1.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
     </dependencies>
 
-
-
-
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>

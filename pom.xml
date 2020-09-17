@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
 	<modules>
-		<module>stdls-backend-web</module>
-		<module>stdls-backend-service</module>
-		<module>stdls-backend-dao</module>
-		<module>stdls-backend-common</module>
+		<module>template-web</module>
+		<module>template-service</module>
+		<module>template-dao</module>
+		<module>template-common</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -16,9 +16,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.daidai.stdls</groupId>
-	<artifactId>stdls-backend-parent</artifactId>
+	<artifactId>template-parent</artifactId>
 	<version>1.0.0</version>
-	<name>stdls-backend-parent</name>
+	<name>template-parent</name>
 	<description>标准后台</description>
 
 	<properties>
